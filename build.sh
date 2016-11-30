@@ -1,3 +1,6 @@
 #!/bin/bash
-jekyll build -s ./jekyll-uno -d public --layouts jekyll-uno/_layouts --config _config.yml --incremental
+cd jekyll-uno
+rvm 2.0.0 do bundle
+rvm 2.0.0 do jekyll build -s . -d ../public --config ../_config.yml --incremental
+cd ..
 cp keybase.txt public/
