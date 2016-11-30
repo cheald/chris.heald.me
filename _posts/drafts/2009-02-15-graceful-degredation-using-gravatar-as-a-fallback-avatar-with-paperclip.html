@@ -1,0 +1,104 @@
+---
+layout: post
+title: 'Graceful degredation: Using Gravatar as a fallback avatar with Paperclip'
+categories: []
+tags: []
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '2'
+  dsq_thread_id: '335200559'
+---
+Lots of people use <a href="http://www.thoughtbot.com/projects/paperclip">Paperclip</a> for stuff like letting their users upload avatars. This is great - Paperclip is easy to use, quick to integrate, and painless to maintain.
+
+However, <a href="http://en.gravatar.com">Gravatar</a> has a great selling point: The user gets an avatar without ever having to go set one on your site. They have an identity established the moment they sign on. You've seen it in Wordpress blogs (including this one!) and in products like <a href="http://www.redmine.org/">Redmine</a> - you just enter your name and email to comment, and you automagically have your Gravatar show up next to your post.
+
+Fortunately, Paperclip is flexible enough to let us integrate Gravatars without too much of a hassle.
+
+<!--more-->
+
+~~~ruby
+class User < ActiveRecord::Base
+	# Paperclip lets you specify custom interpolations for your paths and such. We're going to exploit that!
+	Paperclip::Attachment.interpolations[:gravatar_url] = proc do |attachment, style|
+		# Suck out the size of the thumbnail. Assumes square thumbnails!
+		# If we can't find the size data for whatever reason, the gravatar_url default will pick a size.
+		size = nil
+		if size_data = attachment.styles[style].first then
+			if thumb_size = size_data.match(/\d+/).to_a.first then
+				size = thumb_size.to_i
+			end
+		end
+		attachment.instance.gravatar_url(nil, size)
+	end
+
+	# Paperclip macro - the important bit is the :default_url, with some extra sauce in the :styles
+	has_attached_file(:avatar, 
+		:url => "/images/avatars/:id/:style_:basename.:extension", 
+		:path => ":rails_root/public/images/avatars/:id/:style_:basename.:extension",
+		:default_url => ":gravatar_url",
+		:default_style => :regular,
+		:styles => {
+			:tiny => "16x16#",
+			:small => "20x20#",
+			:regular => "25x25#",
+		}		
+	)
+	
+	# Constructs a gravatar URL from size information. We can pass in a custom default image URL, if we want.
+	# This assumes you have an "email" field on your model!
+	def gravatar_url(default = "", size = 100)
+		hash = Digest::MD5.hexdigest(email.downcase.strip)[0..31]
+		"http://www.gravatar.com/avatar/#{hash}.jpg?size=#{size}&d=#{CGI::escape default}"
+	end
+end	
+~~~
+
+Let's try it out.
+~~~ruby
+# Load a user with an avatar set...
+>> u.avatar(:regular).url
+=> "/images/avatars/2/regular_PB070175.jpg"
+
+# Now nil the avatar...
+>> u.avatar = nil
+=> nil
+
+# Reload, and check it out, Gravatar URL!
+>> u.save; u.reload
+=> nil
+>> u.avatar(:regular).url
+=> "http://www.gravatar.com/avatar/7448d375a321d33eecef61c7176246ef.jpg?size=25&d="
+~~~
+
+Sweetness. Default avatars for new users if they have a Gravatar, but they can set a custom one if they want, or if they've never set a Gravatar.
+
+One thing you might want to do is to provide a non-Gravatar default image. That's pretty easy with a few tweaks to the code we've set up.
+
+First, you need a series of default avatars, one for each size that your user avatars can be. Name them after your styles, of course, so you'll have something like:
+
+~~~ruby
+/images/avatars/default/tiny.png
+/images/avatars/default/small.png
+/images/avatars/default/regular.png
+~~~
+
+Then, you'll adjust your custom interpolator:
+
+~~~ruby
+	DEFAULT_AVATAR_URL = "http://www.yourhost.com/images/avatars/default/%s.png"
+	Paperclip::Attachment.interpolations[:gravatar_url] = proc do |attachment, style|
+		size = nil
+		if size_data = attachment.styles[style].first then
+			if thumb_size = size_data.match(/\d+/).to_a.first then
+				size = thumb_size.to_i
+			end
+		end
+		attachment.instance.gravatar_url(sprintf(DEFAULT_AVATAR_URL, style), size)
+	end
+~~~
+
+There are additional hacks you could do by including AssetTagHelper into your model in order to take advantage of asset load balancing in Rails and to avoid having to hard-code your site's URL, but that gets a little messy, and is a post for another day.
+
+In the meantime, enjoy your increased user engagement!

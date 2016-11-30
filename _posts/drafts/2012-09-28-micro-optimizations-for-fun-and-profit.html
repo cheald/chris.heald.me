@@ -1,0 +1,63 @@
+---
+layout: post
+title: Micro-optimizations for fun and profit
+categories:
+- Performance
+- Rails
+- Ruby
+tags: []
+status: draft
+type: post
+published: false
+meta:
+  _edit_last: '2'
+  _syntaxhighlighter_encoded: '1'
+---
+One of my favorite parts of any project is performance tuning. It's engaging, requires you to really learn the software you're using, and is ridiculously satisfying when you identify a sticky spot and eliminate it.
+
+I just spent the evening improving a current project with ruby-prof and kcachegrind, and with great success; I made performance fixes to MongoMapper that resulted in approximately a 20% baseline speedup. What's most surprising about it is that none of these are really big optimizations. In fact, these are truly the kind of micro-optimizations that Ruby developers often ignore. However, as I'll demonstrate, there are times when micro-optimizations are worth your time!
+
+I first started learning the ins-and-outs of micro-optimization via Lua (in the context of World of Warcraft mods, which seems trivial, but is actually important). Understanding how your language's VM treats certain operations can be the difference between fast and slow. In WoW modding, Lua mods have to be extremely performant - you have only microseconds per frame to do the things you need to get done before you start to impact the player's framerate, so it becomes extremely important to understand how to get the most out of your bytecode.
+
+The same applies in Ruby, as well. Though we don't have the ability to look at compiled VM ops in MRI, we have a few tools for optimizing things.
+
+<h2>C vs Ruby</h2>
+
+The Ruby interpreter and stdlib is implemented in C. It is fast. It is very fast. As a result, any time you can leverage constructs that exist in compiled C rather than in Ruby, you're going to see a performance benefit. This seems obvious, especially with the prevalence of C extensions in Ruby-land to speed up certain slow gems, but what does this mean for the micro-optimizer?
+
+Well, consider something like `foo.nil?` vs `foo.present?`. `#present?` is implemented in Ruby, and while it is more flexible than a nil check, it's also a *lot* slower. So, while the following is more idiomatic:
+
+~~~ruby
+do_stuff if foo.present?
+~~~
+
+It's far, far more efficient to stick to your core methods:
+
+~~~ruby
+do_something if !foo.nil? and foo.length > 0
+~~~
+
+By way of demonstration, here's a quick benchmark with results:
+
+~~~ruby
+require 'benchmark'
+require 'active_support/core_ext/string'
+
+times = 10000000
+
+foo = "asdf"
+
+Benchmark.bm do |x|
+  x.report("nil") { times.times { foo.nil? or foo.length == 0 }}
+  x.report("present?") { times.times { !foo.present? }}
+end
+
+#       user     system      total        real
+# nil  1.010000   0.010000   1.020000 (  1.009044)
+# present?  8.880000   0.000000   8.880000 (  8.937725)
+
+~~~
+
+`#present?` is 9x slower!
+
+I want to stress that I am not advocating that you abandon the use of `#present?` <i>et al</i> in your application code; the performance difference there likely isn't worth the increase in readability. But, in the case of something like the MongoMapper code, which is run tens of thousands of times per pageview, those differences do add up.

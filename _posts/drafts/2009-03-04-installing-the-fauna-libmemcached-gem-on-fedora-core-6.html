@@ -1,0 +1,26 @@
+---
+layout: post
+title: Installing the fauna libmemcached gem on Fedora Core 6
+categories: []
+tags: []
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '2'
+  dsq_thread_id: '340781537'
+---
+This is mostly for my own reference, but also because I couldn't find any great help while googling the problem.
+
+I'm working on switching from memcache-client to <a href="http://github.com/fauna/memcached/tree/master">Evan Weaver's libmemcached</a> gem, and it's gone well, except for one nagging error:
+
+~~~rubylibmemcached.so.2: cannot open shared object file: No such file or directory - /opt/ruby-enterprise-1.8.6-20081215/lib/ruby/gems/1.8/gems/memcached-0.13/lib/rlibmemcached.so~~~
+
+libmemcached.so.2 was absolutely there, in my `/usr/local/lib` path. However, ldd was showing that rlibmemcached.so wasn't properly linked to that library. The solution was the following:
+
+~~~ruby
+[root@polaris libmemcached-0.25.14]# ./configure --prefix=/usr
+[root@polaris libmemcached-0.25.14]# make && make install
+~~~
+
+ldd now shows the proper reference, and everything works. All better!

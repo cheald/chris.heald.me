@@ -1,0 +1,37 @@
+---
+layout: post
+title: Ruby 1.9.3 and Rails 2.3.14
+categories: []
+tags: []
+status: draft
+type: post
+published: false
+meta:
+  _edit_last: '2'
+  _syntaxhighlighter_encoded: '1'
+---
+I spent some time last night upgrading a large production application from Ruby 1.8.7 (REE) to Ruby 1.9.3. While we're still running REE in production, the application is now running and passing all tests locally.
+
+Getting set up was pretty straightforward --
+
+[bash]
+$ rvm get head
+$ rvm install 1.9.3
+$ rvm use 1.9.3
+$ rvm gemset create appname
+$ rvm gemset use appname
+[/bash]
+
+Once this was up and running, I did have to make a couple of changes to get things working.
+
+The biggest of these is that you'll notice that Ruby 1.9.3 now throws all sorts of missing file errors when you try to load things up. What happened is that the error message for a missing file changed betwen 1.8.7 and 1.9.3, so you might see something like
+
+`cannot load such file -- test/unit/ui/console/testrunner`
+
+ActiveSupport 2.3.14 look for certain pattern matches in LoadError exceptions to determine whether or not to turn it into a MissingSourceFile exception, which Rails may or may not ignore, depending on a couple of factors. Since all that changed is the error message, this is an easy fix. In an initializer:
+
+~~~ruby
+MissingSourceFile::REGEXPS.push << [/^cannot load such file -- (.+)$/i, 1]
+~~~
+
+This is going to solve <i>most</i> of your problems, hopefully.

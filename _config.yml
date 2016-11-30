@@ -1,0 +1,39 @@
+# Site settings
+title: chris.heald.me
+description: "Personal blog of Chris Heald. Topics include web development, performance, and security."
+url: https://chris.heald.me
+google_analytics: 'UA-5738363-1'
+disqus_shortname: coffeepowered
+baseurl: '/'
+
+author:
+  name: 'Chris Heald'
+  email: cheald@gmail.com
+  twitter_username: cheald
+  # facebook_username: joshgerdes
+  github_username:  cheald
+  linkedin_username:  cheald
+
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
+# Build settings
+destination: _site
+paginate: 20
+permalink: /:year/:title/
+markdown: kramdown
+highlighter: rouge
+
+kramdown:
+  # use Github Flavored Markdown
+  input: GFM
+  # do not replace newlines by <br>s
+  hard_wrap: false
+
+gems: ['jekyll-paginate']
+exclude: ['README.md', 'Gemfile', 'Gemfile.lock', 'screenshot.png']

@@ -1,0 +1,53 @@
+---
+layout: post
+title: Four plugins to make your life easier
+categories: []
+tags: []
+status: draft
+type: post
+published: false
+meta:
+  _edit_last: '2'
+---
+The wonderful thing about the Rails community is that it's always solving problems in bigger and better ways. People aren't content to sit still on a half-solution - they are continually finding the things that irritate and annoy them, and polish them up. Here are a few of those solutions that I've found exceptionally handy in my own work.
+
+<h2>HAML and SASS</h2>
+Boy howdy, I'm sure I'm going to touch off a flame war with this one. Folks tend to either love or hate this pair. I avoided them for the longest time ("why do I need an HTML meta-language? HTML is meta enough already"), but after trying out HAML for use as an XML templating language, I was immediately hooked.
+
+For the uninitiated, HAML and SASS are sister products, and are template languages for HTML and CSS, respectively. What this means is that rather than writing raw HTML or CSS, you would use HAML/SASS syntax, and then compile those files to their target formats. Seems like a lot of work, right? Well, on the surface, maybe. Once you actually start to use it, the benefits become really apparent.
+
+Both HAML and SASS are whitespace-significant languages. For HAML, tag trees are denoted with indentation; for CSS, indentation indicates selector nesting. Both are devoid of block-closing syntax (Python-lovers, rejoice), and the net effect of both is a massively slimmer source file, which means you spend less time typing and more time creating.
+
+Consider the following simple HTML form:
+
+~~~ruby
+<ul class="dropdown dropdown-menu" id="main-menu">
+	<li>
+		<a href="/" class="<%=tab_active(:home) %>">Home</a>
+		<ul>
+			<% if signed_in? %>
+				<li><%=link_to "Sign out", account_session_path, :method => :delete %></li>
+			<% else %>
+				<li><%=link_to "Sign in", new_account_session_path %></li>
+				<li><%=link_to "Sign up", new_account_path %></li>			
+			<% end %>
+		</ul>
+	</li>
+</ul>
+~~~
+
+Now, look at the HAML version:
+
+~~~ruby
+%ul.dropdown.dropdown-menu#main-menu
+	%li
+		%a{:href => "/", :class => tab_active(:home)} Home
+		%ul
+			-	if signed_in?
+				%li= link_to "Sign out", account_session_path, :method => :delete
+			- else
+				%li= link_to "Sign in", new_account_session_path
+				%li= link_to "Sign up", new_account_path
+~~~
+
+The HAML version is about 24% less typing, and is a lot cleaner to read. 

@@ -1,0 +1,74 @@
+==================================================================
+https://keybase.io/cheald
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://chris.heald.me
+  * I am cheald (https://keybase.io/cheald) on keybase.
+  * I have a public key with fingerprint 02D7 B41C 99BE 4988 5408  6A7A A59B 4A01 51B4 4EA7
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "01016d1aef2e494da502ebbeabd2cbe122f14852d3acf5a9b7afecb349415ae54dc60a",
+            "fingerprint": "02d7b41c99be498854086a7aa59b4a0151b44ea7",
+            "host": "keybase.io",
+            "key_id": "a59b4a0151b44ea7",
+            "kid": "01016d1aef2e494da502ebbeabd2cbe122f14852d3acf5a9b7afecb349415ae54dc60a",
+            "uid": "0f8ff984fc951b49cfe5ac7905f7d619",
+            "username": "cheald"
+        },
+        "service": {
+            "hostname": "chris.heald.me",
+            "protocol": "https:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1480545306,
+    "expire_in": 157680000,
+    "prev": "f9d73b029780a9b94c910fbd994e36efd0ec770cf373392df39afe0b2e24f5c7",
+    "seqno": 24,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+owGtUmtMFFcY3V3AWCjBKAJSKM1A7YPtMs+dvUtFaCxRYmgthQK1LHdm7sC4MLvM
+LFADJjZKfQNSm8bSGGujgNmtYKAVrBIUg9bUVFa3D600rtJQakMQRSliZ+jjV3/2
+/rm533fO+c53cpsjQwwm4+HWHOO67tw248UxzlC48s2EOoxzCRsxex3mRPMXqhCQ
+6nE4JQGzYziBE1aBgEgkEQ1oATI4iTgOQU4geQ4RJCkStI0hBQryIgMBx0IR8Ryl
+YQkGIoYWeCsOMTMmSnIZUtyKJHt0WVJgOZrgAeA0WZuNoXGbFbIQMoCjIU4wBEfT
+CLIasdyl6gzNHAdVZJFcWk17OObt/Qf+f/Zd/ZecaBNFYKNFHuijAC8iBvIswBmR
+FawE0IEqUmRYiTQ0X45ghYBtMmNarUbikR6rvse/fUVSLfMgi1YwY27F5XHxrgqt
+V+7xuFW7zvVsdOvgWsQ5/pZxcJIsaDlqjBqkqJJLxuyEhuQ9kq6rLYQzNEPhVjOG
+3nVLCnJIOoJhrTZcO/ocVKNJikBgKQ4vIgFrw7XdAc0DAhc5AQAaUVYkCjjiWRbn
+RYqlKEAKIgW0eHCORCQtMrwes4qqZBdmJ2nNKCzTRFWpTIaeagVhm8J3mBJCDUaT
+YUGYSf9ihvAnFv3z7xJ2Rc098+vRyqhzB7naMHAprq2zaM3lulJ/0onINH7dk96f
+ByISLbURuYGtFnfd7r7bE/VJryjvHAgkj+deBy8GepaNPs5aNFufNC3B9KmZhw1U
+cvf16lPZ0ytSE/LaUt5/NFiTP/Js5r0jn3iumRyVr4ZvPlZb7A3EzsrBA/XD9jj7
+yrv9D672uDLV6Pi3DrFUiz9rfMZPZHT7dr5Q0NHdfGo6JHjml677CcMNw4bm9d8I
+w2G3YodOKONn+hJ7VnFbQiaRc0F4/9Do6fa+PTW+h8uI0v7FwDmDKfvzJj5/Y2Q0
+rnRv1Rrro7Pe107+ZuKP40sHT1o2b5+7O5Vx6YcsrDezKeSnUHGhPyrfmxMMdsY/
+XdY7EMEcB91fRE42qQGfnOeTbxq83sexEdHZjVPWAGEsvtqDrxbGYlNullTkTHwv
+9GaIXdcK84vaD69qSJw0Nn30tUxEj/jSFu7IOvh6wZ6YB/fGnl+7tXH/uQ+W/jHb
+kO+8MHNl93PH+NDPwqJTZjsu79q3N/XsDSkRtQNfa3a2v2RmOb3z0yNDW1o2NF1M
+DrmQ1Ply57ephYvTS0p33Fh+tKvEORTfW/Vx/YdpkTAQjLlTcCf995fMI4MRSSJh
+SLmyYTKtfa4FGM7PVsRsW7L99pJb9/3Wp1r3rQ43D6wINsZ/+WPue8Vvd6z/bu22
+85WHTkfmf2X5Ew==
+=Zuf2
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/cheald
+
+==================================================================
+

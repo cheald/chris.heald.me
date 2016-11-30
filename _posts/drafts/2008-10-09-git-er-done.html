@@ -1,0 +1,37 @@
+---
+layout: post
+title: git 'er done!
+categories: []
+tags: []
+status: private
+type: post
+published: false
+meta:
+  _edit_last: '38'
+---
+If you've been in development for any significant length of time, you've run into source control systems, like <a href="http://www.borland.com/us/products/starteam/index.html">Starteam</a>, <a href="http://msdn.microsoft.com/en-us/vs2005/aa718670.aspx">Visual Source Safe</a>, <a href="http://www.nongnu.org/cvs/">CVS</a>, or <a href="http://subversion.tigris.org/">Subversion (SVN)</a>. Maybe you've even used one or two.
+
+There's a new trend in source control called "distributed source control". Traditionally, you have a single central server that houses all your code, manages synchronization, and the like. However, new source control systems like <a href="http://git.or.cz/">git</a> are taking a different approach - there is no single repository. Instead, every developer in the project runs their own repository, which they may allow others to pull code from. It's a little confusing at first, but far more flexible once you get into it.
+
+You've may have heard of git, but how do you practically use it? It's easy! Once installed, you have a few basic commands you might be interested in.
+
+<h3>git init</h3>
+`git init` creates a new repository in your current working directory. For example:
+
+Let's say I have an empty directory, and want to create a git repository out of it. I just `git init` and we're ready to start committing code.
+
+<h3>git add</h3>
+Now that we have a repository, how do we use it? It's easy.
+
+Let's add a file to the directory - call it README - and put "Hello, Version 1" in it. Save it, and next, we'll add it to our git repository.
+
+<pre>`git add README`</pre>
+
+
+<h3>git clone</h3>
+
+`git clone` allows you to <i>clone</i> another existing repository. Let's say you want to get a copy of my <a href="http://github.com/cheald/site_config/tree/master">site_config</a> Rails plugin. All you'd have to do is <i>clone</i> the URL that github gives you:
+
+<pre>`git clone git://github.com/cheald/site_config.git`</pre>
+
+Once the command completes, you'll have a brand-new `site_config` directory, with the project files inside of it.

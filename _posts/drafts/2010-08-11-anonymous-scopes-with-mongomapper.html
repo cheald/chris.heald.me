@@ -1,0 +1,40 @@
+---
+layout: post
+title: Anonymous scopes with MongoMapper
+categories: []
+tags: []
+status: draft
+type: post
+published: false
+meta:
+  _edit_last: '2'
+  _syntaxhighlighter_encoded: '1'
+---
+I'm using MongoMapper as my Rails ORM in my current project, and it's worked out really well so far. It has <em>most</em> of the features that I know and love from ActiveRecord, and where they aren't there, it's usually not too bad to add them.
+
+I needed anonymous scopes today. Named scopes are really nice and all, and they're easy to add, but anonymous scopes can make things really nice and sexy. Fortunately, they're really easy to patch in:
+
+`lib/mongo_mapper/anonymous_scopes.rb`
+~~~ruby
+module MongoMapper
+	module AnonymousScopes
+		def scoped(by = {})		
+			query.scoped(by)
+		end
+	end
+end
+
+module Plucky
+	class Query
+		def scoped(by = {})
+			merge(where(by))
+		end
+	end
+end
+~~~
+
+Now, in your model, just extend the class with it:
+
+class User
+  extend MongoMapper::AnonymousScopes
+end

@@ -1,0 +1,27 @@
+---
+layout: post
+title: Towards A Fast Rails Boot
+categories: []
+tags: []
+status: draft
+type: post
+published: false
+meta:
+  _edit_last: '2'
+---
+I've been doing a lot of work lately on improving boot times in my environment without resorting to "checkpointing" tools like <a href="https://github.com/sporkrb/spork">spork</a> or <a href="https://github.com/burke/zeus">Zeus</a>. While both are great, they're a bandaid on the real problem, which is...Rails is heavy, and booting it is slow.
+
+The core of the problem is that Ruby, out of the box, isn't really configured to work well with big Rails apps; it's meant to be used with small scripts. Fortunately, there are ways to solve it.
+
+<h2>Garbage Collection</h2>
+Most Rails devops know that you can <a href="http://www.coffeepowered.net/2009/06/13/fine-tuning-your-garbage-collector/">tune your GC settings</a> for better Rails performance. This still holds true, though the options are a little slimmer in Ruby 1.9.
+
+`RUBY_HEAP_MIN_SLOTS` and `RUBY_GC_MALLOC_LIMIT` are the same as they've been since REE introduced them. For `RUBY_HEAP_MIN_SLOTS`, give yourself a nice big initial heap and you'll avoid extraneous heap reallocations. 550000 is the right number for my app, though it may be different for yours. I'd start over 200k or so, though. `RUBY_GC_MALLOC_LIMIT` will really depend on how much memory you have available; Ruby will force a GC pass every time it mallocs this much memory. I have this set to 500mb (500000000) for my production apps, but they run on big servers with lots of RAM. The higher this number, the fewer GC passes you'll make, but your processes might use more memory.
+
+Additionally, `RUBY_HEAP_FREE_MIN` is now `RUBY_FREE_MIN`. Its functionality is the same, though - Ruby must have this many heap slots free after a GC pass, or it allocates a new heap. With my 550000 initial heap size, I set this to 80,000. Read on for why.
+
+There's an extra subtlety in 1.9 -- Ruby can now deallocate unused heaps, so if you end up in a boundary condition where you keep bouncing between <em>n</em> and <em>n-1</em> heaps, your performance is going to suffer as heaps are constantly allocated and deallocated. To this end, you want a) a large-enough initial heap size to hold your whole app with a little bit of room to grow, and b) a RUBY_FREE_MIN that is large enough to accommodate the number of objects freed in a typical GC pass.
+
+<h2>RVM and Optimization</h2>
+
+Many people use RVM to wrangle their Ruby installs and gemsets. This is great, except that <a href="http://spin.atomicobject.com/2012/11/06/is-your-application-running-with-ruby-slow/">RVM doesn't compile Ruby with GCC optimizations</a>. 
